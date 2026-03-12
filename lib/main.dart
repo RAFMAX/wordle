@@ -32,7 +32,8 @@ class Tile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return AnimatedContainer(
+      duration: Duration(milliseconds: 500),
       width: 60,
       height: 60,
       decoration: BoxDecoration(
@@ -58,9 +59,14 @@ class Tile extends StatelessWidget {
   }
 }
 
-class GamePage extends StatelessWidget {
+class GamePage extends StatefulWidget {
   GamePage({super.key});
+  
+  @override
+  State<GamePage> createState() => _GamePageState();
+}
 
+class _GamePageState extends State<GamePage> {
   final Game _game = Game();
 
 
@@ -83,7 +89,9 @@ class GamePage extends StatelessWidget {
             ),
           GuessInput(
             onSubmitGuess: (String guess){
-              print(guess);
+              setState(() {
+                _game.guess(guess);
+              });
             }
           )
         ],
