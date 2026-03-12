@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'game.dart';
 
-
 void main() {
   runApp(const MainApp());
 }
@@ -14,11 +13,9 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: Align(alignment: Alignment.center, child: Text('Birdle'))
+          title: Align(alignment: Alignment.center, child: Text('Birdle')),
         ),
-        body: Center(
-          child: GamePage(),
-        ),
+        body: Center(child: GamePage()),
       ),
     );
   }
@@ -26,7 +23,7 @@ class MainApp extends StatelessWidget {
 
 class Tile extends StatelessWidget {
   const Tile(this.letter, this.hitType, {super.key});
-  
+
   final String letter;
   final HitType hitType;
 
@@ -38,8 +35,11 @@ class Tile extends StatelessWidget {
       height: 60,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
-        border: switch(hitType) {
-          HitType.none => Border.all(color: const Color.fromARGB(255, 187, 187, 187), width: 2),
+        border: switch (hitType) {
+          HitType.none => Border.all(
+            color: const Color.fromARGB(255, 187, 187, 187),
+            width: 2,
+          ),
           _ => null,
         },
         color: switch (hitType) {
@@ -61,7 +61,7 @@ class Tile extends StatelessWidget {
 
 class GamePage extends StatefulWidget {
   GamePage({super.key});
-  
+
   @override
   State<GamePage> createState() => _GamePageState();
 }
@@ -69,7 +69,31 @@ class GamePage extends StatefulWidget {
 class _GamePageState extends State<GamePage> {
   final Game _game = Game();
 
-
+  void _showLoseDialog() {
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Game over'),
+          content: Text(
+            'The word was: ${_game.hiddenWord.toString().toUpperCase()}',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                setState(() {
+                  _game.resetGame();
+                });
+              },
+              child: const Text('Retry'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,17 +102,17 @@ class _GamePageState extends State<GamePage> {
       child: Column(
         spacing: 5.0,
         children: [
-          for(var guess in _game.guesses) 
+          for (var guess in _game.guesses)
             Row(
               spacing: 5.0,
               mainAxisSize: MainAxisSize.min,
               children: [
-                for(var guessLetter in guess)
-                  Tile(guessLetter.char, guessLetter.type)
+                for (var guessLetter in guess)
+                  Tile(guessLetter.char, guessLetter.type),
               ],
             ),
           GuessInput(
-            onSubmitGuess: (String guess){
+            onSubmitGuess: (String guess) {
               if (!_game.isLegalGuess(guess)) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
@@ -101,10 +125,14 @@ class _GamePageState extends State<GamePage> {
               setState(() {
                 _game.guess(guess);
               });
-            }
-          )
+
+              if (_game.didLose) {
+                _showLoseDialog();
+              }
+            },
+          ),
         ],
-      )
+      ),
     );
   }
 }
@@ -146,12 +174,11 @@ class GuessInput extends StatelessWidget {
         IconButton(
           padding: EdgeInsets.zero,
           icon: Icon(Icons.arrow_circle_up_sharp),
-          onPressed: 
-            () {
-              onSubmitGuess(_textEditingController.text.trim());
-              _textEditingController.clear();
-              _focusNode.requestFocus();
-            },
+          onPressed: () {
+            onSubmitGuess(_textEditingController.text.trim());
+            _textEditingController.clear();
+            _focusNode.requestFocus();
+          },
         ),
       ],
     );
