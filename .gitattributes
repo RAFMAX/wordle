@@ -1,0 +1,8 @@
+# Prefer Dart as the primary language on GitHub for this Flutter app.
+# These platform folders are mostly generated/native scaffolding.
+android/** linguist-generated=true
+ios/** linguist-generated=true
+linux/** linguist-generated=true
+macos/** linguist-generated=true
+windows/** linguist-generated=true
+web/** linguist-generated=true
