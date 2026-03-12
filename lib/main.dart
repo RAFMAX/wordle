@@ -89,6 +89,15 @@ class _GamePageState extends State<GamePage> {
             ),
           GuessInput(
             onSubmitGuess: (String guess){
+              if (!_game.isLegalGuess(guess)) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('It is not a legal guess try again'),
+                    duration: Duration(seconds: 2),
+                  ),
+                );
+                return;
+              }
               setState(() {
                 _game.guess(guess);
               });
