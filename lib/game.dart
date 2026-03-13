@@ -2,7 +2,7 @@ import 'dart:collection';
 import 'dart:math';
 import 'package:legal_wordle_words/legal_wordle_words.dart';
 
-
+var ws = 0; 
 const List<String> allLegalGuesses = [...legalWords, ...legalGuesses];
 const defaultNumGuesses = 5;
 
@@ -56,6 +56,14 @@ class Game {
   Word guess(String guess) {
     final result = matchGuessOnly(guess);
     addGuessToList(result);
+
+    // Update streak once per round outcome.
+    if (didWin) {
+      ws++;
+    } else if (didLose) {
+      ws = 0;
+    }
+
     return result;
   }
 
@@ -65,7 +73,6 @@ class Game {
     for (var letter in previousGuess) {
       if (letter.type != HitType.hit) return false;
     }
-
     return true;
   }
 
