@@ -130,6 +130,11 @@ class _GamePageState extends State<GamePage> {
                 _showLoseDialog();
               }
             },
+            onRetry: () {
+              setState(() {
+                _game.resetGame();
+              });
+            },
           ),
         ],
       ),
@@ -138,9 +143,14 @@ class _GamePageState extends State<GamePage> {
 }
 
 class GuessInput extends StatelessWidget {
-  GuessInput({super.key, required this.onSubmitGuess});
+  GuessInput({
+    super.key,
+    required this.onSubmitGuess,
+    required this.onRetry,
+  });
 
   final void Function(String) onSubmitGuess;
+  final VoidCallback onRetry;
 
   final TextEditingController _textEditingController = TextEditingController();
 
@@ -176,6 +186,16 @@ class GuessInput extends StatelessWidget {
           icon: Icon(Icons.arrow_circle_up_sharp),
           onPressed: () {
             onSubmitGuess(_textEditingController.text.trim());
+            _textEditingController.clear();
+            _focusNode.requestFocus();
+          },
+        ),
+        IconButton(
+          padding: EdgeInsets.zero,
+          icon: Icon(Icons.refresh),
+          tooltip: 'Retry',
+          onPressed: () {
+            onRetry();
             _textEditingController.clear();
             _focusNode.requestFocus();
           },
